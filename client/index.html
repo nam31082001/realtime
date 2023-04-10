@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <ul id="message"></ul>
+    <form id="chat_form">
+        <input type="text" id="chat_mes" />
+        <button id="send_chat">Gửi</button>
+    </form>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io()
+    const name = prompt('Tên bạn là gì')
+    const chatFrom = document.querySelector('#chat_form')
+    const chatMes = document.querySelector('#chat_mes')
+
+    chatFrom.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const message = chatMes.value
+        socket.emit('on-chat', {
+            name,
+            message,
+           
+        })
+        chatMes.value = ''
+    })
+    socket.on('user-chat', (item) => {
+        const chatItem = document.createElement('li')
+        chatItem.textContent = `${item.name}:${item.message}`
+        const messages = document.querySelector('#message')
+        messages.appendChild(chatItem)
+    })
+</script>
+
+</html>
